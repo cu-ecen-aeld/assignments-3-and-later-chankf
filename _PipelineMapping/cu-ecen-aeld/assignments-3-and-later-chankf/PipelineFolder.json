@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "cu-ecen-aeld/assignments-3-and-later-chankf",
+  "pipelineDirectory": "assignments-3-and-later-chankf",
+  "workspaceDirectory": "assignments-3-and-later-chankf/assignments-3-and-later-chankf",
+  "repositories": {
+    "cu-ecen-aeld/assignments-3-and-later-chankf": {
+      "repositoryPath": "assignments-3-and-later-chankf/assignments-3-and-later-chankf",
+      "lastRunOn": "01/15/2024 19:57:48 +00:00"
+    }
+  },
+  "lastRunOn": "01/15/2024 19:57:48 +00:00"
+}

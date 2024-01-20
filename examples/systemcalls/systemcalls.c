@@ -1,4 +1,10 @@
 #include "systemcalls.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
 
 /**
  * @param cmd the command to execute with system()
@@ -16,8 +22,16 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+    int ret;
+    bool result;
 
-    return true;
+    ret = system (cmd);
+    if (ret == 0) 
+        result = true;
+    else 
+        result = false;
+
+    return result;
 }
 
 /**
@@ -45,9 +59,10 @@ bool do_exec(int count, ...)
         command[i] = va_arg(args, char *);
     }
     command[count] = NULL;
+
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    // command[count] = command[count];
 
 /*
  * TODO:
@@ -59,9 +74,61 @@ bool do_exec(int count, ...)
  *
 */
 
+    bool result;
+    int status;
+    pid_t pid_child;
+    pid_t pid;
+
+    result = false;
+
+    fflush(stdout);
+    pid_child = fork ();
+    fflush(stdout);
+
+    if (pid_child == -1)
+    // fork error
+    {
+        result = false;
+    }
+    else if (pid_child == 0)
+    // at child
+    // on success, fork() returns zero which is equivalent to false 
+    {
+        fflush(stdout);
+
+        int ret;
+        char *path;
+
+        path = command[0];
+
+        ret = execv (path, command);
+        if (ret == -1)
+            exit (EXIT_FAILURE);
+
+    }
+    else if (pid_child > 0)
+    {
+        fflush(stdout);
+        
+        pid = waitpid (pid_child, &status, 0);
+        if (pid == -1)
+            result = false;
+        else if (WIFEXITED (status))
+        {
+            if (status == 0)
+                result = true;
+            else
+                result = false;
+
+        } 
+        else
+            result = false;
+
+    }
+// 
     va_end(args);
 
-    return true;
+    return result;
 }
 
 /**
@@ -82,7 +149,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     command[count] = NULL;
     // this line is to avoid a compile warning before your implementation is complete
     // and may be removed
-    command[count] = command[count];
+    //command[count] = command[count];
 
 
 /*
@@ -93,7 +160,79 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *
 */
 
+    bool result;
+    int status;
+    pid_t pid_child;
+    pid_t pid;
+
+    result = false;
+
+    fflush(stdout);
+    pid_child = fork ();
+    fflush(stdout);
+
+    if (pid_child == -1)
+    // fork error
+    {
+        result = false;
+    }
+    else if (pid_child == 0)
+    // at child
+    // on success, fork() returns zero which is equivalent to false 
+    {
+        fflush(stdout);
+
+        int fd = open(outputfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1)
+        {
+            result = false;
+
+        }
+        else if (dup2(fd, STDOUT_FILENO) == -1)
+        // cannot redirect stdout to fd
+        {
+            close (fd);
+            result = false;
+        
+        }
+        else
+        // execute command
+        {
+            close (fd);
+        
+            int ret;
+            char *path;
+
+            path = command[0];
+
+            ret = execv (path, command);
+            if (ret == -1)
+                result = false;
+
+        }
+
+    }
+    else if (pid_child > 0)
+    // at parent, wait for child to terminate and obtain the exit status 
+    {
+        pid = waitpid (pid_child, &status, 0);
+        if (pid == -1)
+            result = false;
+        else if (WIFEXITED (status))
+        {
+            if (status == 0)
+                result = true;
+            else
+                result = false;
+
+        } 
+        else
+            result = false;
+
+    }
+
+//
     va_end(args);
 
-    return true;
+    return result;
 }

@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "cu-ecen-aeld/assignment-2-chankf",
+  "pipelineDirectory": "assignment-2-chankf",
+  "workspaceDirectory": "assignment-2-chankf/assignment-2-chankf",
+  "repositories": {
+    "cu-ecen-aeld/assignment-2-chankf": {
+      "repositoryPath": "assignment-2-chankf/assignment-2-chankf",
+      "lastRunOn": "01/11/2024 16:04:16 +00:00"
+    }
+  },
+  "lastRunOn": "01/11/2024 16:05:05 +00:00"
+}
