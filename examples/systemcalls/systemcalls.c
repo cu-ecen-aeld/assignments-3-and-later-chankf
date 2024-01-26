@@ -8,6 +8,8 @@
 
 // 2024-01-26
 //  git clone and push again
+// 2024-01-26
+//  git clone --recurse-submodules url
 //
 
 /**
